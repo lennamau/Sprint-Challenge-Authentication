@@ -12,7 +12,11 @@ module.exports = server => {
   server.post('/api/register', register);
   server.post('/api/login', login);
   server.get('/api/jokes', authenticate, getJokes);
+  server.get('/test', (req, res) => {
+    res.send("Dad Jokes are Here!");
+  });
 };
+
 
 function register(req, res) {
   let user = req.body
@@ -52,6 +56,34 @@ function register(req, res) {
 
 function login(req, res) {
   // implement user login
+  const cred = req.body;
+  if (req.body.username && req.body.password) {
+    db('users')
+      .where('username', cred.username)
+      .then(user => {
+        if (user.length && bcrypt.compareSync(cred.password, user[0].password)) {
+          const token = generateToken(user);
+          res
+            .send(token);
+        }
+        else {
+          res
+            .status(401)
+            .json({message: 'Access not allowed'});
+        }
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({message: 'Invalid credentials - could not be logged in'});
+      })
+  }
+  else {
+    res
+      .status(400)
+      .json({message: 'Provide a username and a password to log in.'});
+  }
+
 }
 
 function getJokes(req, res) {
