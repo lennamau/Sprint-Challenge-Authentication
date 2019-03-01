@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import requiresAuth from '../auth/requiresAuth';
 
-class Users extends React.Component {
+class Jokes extends React.Component {
   state = {
     jokes: [],
   };
@@ -23,10 +23,17 @@ class Users extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/users').then(res => {
-      this.setState({ users: res.data.users });
-    });
-  }
+    const endpoint = 'http://localhost:3300/api/jokes'
+    
+        axios
+            .get(endpoint)
+            .then(res => {
+                this.setState({ jokes: res.data })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
 }
 
-export default requiresAuth(Users);
+export default requiresAuth(Jokes);
