@@ -33,7 +33,6 @@ class App extends Component {
   }
   logout = () => {
     localStorage.removeItem('jwt');
-
     this.props.history.push('/login');
   };
 }
